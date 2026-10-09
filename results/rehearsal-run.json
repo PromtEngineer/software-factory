@@ -1,0 +1,326 @@
+{
+  "runId": "upstash-isolated-2026-10-05T19-26-08-049Z",
+  "backend": "upstash-box",
+  "concurrency": 5,
+  "wallSeconds": 261,
+  "origin": "https://github.com/PromtEngineer/tinylinks",
+  "totalCostUsd": 2.8199850000000004,
+  "results": [
+    {
+      "issue": 1,
+      "title": "Random slugs can collide and overwrite existing links",
+      "stage": "ready_for_human",
+      "seconds": {
+        "triage": 10.9,
+        "build": 27.5,
+        "tests": 0.7,
+        "review": 17.5,
+        "total": 85
+      },
+      "costUsd": 0.2715801,
+      "triage": {
+        "actionable": true,
+        "kind": "bug",
+        "reason": "Verified in code: createApp calls store.create with a single unchecked slugFn() result, and LinkStore.create overwrites any existing entry at that key, so a fix (loop slugFn() against store.has() until free) is concrete and testable."
+      },
+      "work": {
+        "status": "done",
+        "summary": "Fixed POST /links to retry slug generation until an unused slug is found, preventing silent overwrite of existing links on collision. Added a test that forces a collision via injected slugFn and verifies the original link is preserved and a new slug is assigned.",
+        "filesChanged": [
+          "src/server.ts",
+          "test/basic.test.ts"
+        ],
+        "testsAdded": true,
+        "testsPass": true
+      },
+      "docsQueries": [],
+      "branch": "factory/issue-1",
+      "testsPassInVerifier": true,
+      "review": {
+        "verdict": "approve",
+        "issuesFound": []
+      },
+      "pr": "https://github.com/PromtEngineer/tinylinks/pull/14"
+    },
+    {
+      "issue": 3,
+      "title": "GET /stats/:slug returns 500 for an unknown slug",
+      "stage": "ready_for_human",
+      "seconds": {
+        "triage": 14.7,
+        "build": 17.9,
+        "tests": 0.7,
+        "review": 10.3,
+        "total": 69
+      },
+      "costUsd": 0.2136536,
+      "triage": {
+        "actionable": true,
+        "kind": "bug",
+        "reason": "Root cause is a missing null-check (non-null assertion `!`) at server.ts:40, same fix pattern as the adjacent redirect route; outcome (404 + specific body) is concretely testable."
+      },
+      "work": {
+        "status": "done",
+        "summary": "Fixed GET /stats/:slug returning 500 for unknown slugs. The handler used a non-null assertion (store.get(parts[1])!) on a possibly-undefined result, crashing when accessing link.slug. Now it checks for the missing link and returns 404 {\"error\": \"not found\"}, matching the redirect route's behavior. Added a test confirming the 404 response for an unknown slug.",
+        "filesChanged": [
+          "src/server.ts",
+          "test/basic.test.ts"
+        ],
+        "testsAdded": true,
+        "testsPass": true
+      },
+      "docsQueries": [],
+      "branch": "factory/issue-3",
+      "testsPassInVerifier": true,
+      "review": {
+        "verdict": "approve",
+        "issuesFound": []
+      },
+      "pr": "https://github.com/PromtEngineer/tinylinks/pull/12"
+    },
+    {
+      "issue": 4,
+      "title": "HEAD requests are counted as clicks",
+      "stage": "ready_for_human",
+      "seconds": {
+        "triage": 14.4,
+        "build": 21.5,
+        "tests": 0.8,
+        "review": 12,
+        "total": 79
+      },
+      "costUsd": 0.243559,
+      "triage": {
+        "actionable": true,
+        "kind": "bug",
+        "reason": "Concrete fix identified: gate store.recordClick on req.method === \"GET\" in src/server.ts line 47, with testable HEAD vs GET click-count behavior."
+      },
+      "work": {
+        "status": "done",
+        "summary": "Fixed HEAD requests to /:slug incrementing the click counter. src/server.ts now only calls store.recordClick when req.method === \"GET\", while still responding with a 302 and Location header for both GET and HEAD. Added a test verifying HEAD redirects but leaves clicks at 0.",
+        "filesChanged": [
+          "src/server.ts",
+          "test/basic.test.ts"
+        ],
+        "testsAdded": true,
+        "testsPass": true
+      },
+      "docsQueries": [],
+      "branch": "factory/issue-4",
+      "testsPassInVerifier": true,
+      "review": {
+        "verdict": "approve",
+        "issuesFound": []
+      },
+      "pr": "https://github.com/PromtEngineer/tinylinks/pull/13"
+    },
+    {
+      "issue": 5,
+      "title": "Support custom slugs",
+      "stage": "ready_for_human",
+      "seconds": {
+        "triage": 14.8,
+        "build": 28.5,
+        "tests": 0.7,
+        "review": 19,
+        "total": 93
+      },
+      "costUsd": 0.2665088,
+      "triage": {
+        "actionable": true,
+        "kind": "feature",
+        "reason": "Spec gives exact validation regex, status codes (400/409), and fallback behavior, mapping directly to the existing POST /links handler in src/server.ts."
+      },
+      "work": {
+        "status": "done",
+        "summary": "Added custom slug support to POST /links: validates slug against ^[a-z0-9-]{3,32}$ (400 if invalid), returns 409 if slug already taken (existing link untouched), and falls back to random slug generation when slug is omitted.",
+        "filesChanged": [
+          "src/server.ts",
+          "test/basic.test.ts"
+        ],
+        "testsAdded": true,
+        "testsPass": true
+      },
+      "docsQueries": [],
+      "branch": "factory/issue-5",
+      "testsPassInVerifier": true,
+      "review": {
+        "verdict": "approve",
+        "issuesFound": []
+      },
+      "pr": "https://github.com/PromtEngineer/tinylinks/pull/15"
+    },
+    {
+      "issue": 6,
+      "title": "Links that expire",
+      "stage": "ready_for_human",
+      "seconds": {
+        "triage": 12.2,
+        "build": 54.1,
+        "tests": 0.7,
+        "review": 49,
+        "total": 139
+      },
+      "costUsd": 0.4472609000000001,
+      "triage": {
+        "actionable": true,
+        "kind": "feature",
+        "reason": "Specifies a concrete new field, exact status code/body for expired access, and the no-count-on-expiry behavior, all testable against the existing POST /links and GET /:slug handlers in src/server.ts and src/store.ts."
+      },
+      "work": {
+        "status": "done",
+        "summary": "Added optional `expiresInSeconds` (positive integer) to POST /links. The link store now records an `expiresAt` timestamp, and GET /:slug checks it: once past expiry, it returns 410 {\"error\":\"expired\"} without recording a click; links without the field behave as before. Invalid (non-positive or non-integer) expiresInSeconds returns 400.",
+        "filesChanged": [
+          "src/store.ts",
+          "src/server.ts",
+          "test/basic.test.ts"
+        ],
+        "testsAdded": true,
+        "testsPass": true
+      },
+      "docsQueries": [
+        "worker 19:27:10\tvitest vi.setSystemTime usage without affecting timers, restoring real time after test",
+        "reviewer 19:28:05\tvitest vi.setSystemTime without useFakeTimers - does it mock only Date or also timers, and do I need vi.useRealTimers() to reset it?"
+      ],
+      "branch": "factory/issue-6",
+      "testsPassInVerifier": true,
+      "review": {
+        "verdict": "approve",
+        "issuesFound": []
+      },
+      "pr": "https://github.com/PromtEngineer/tinylinks/pull/16"
+    },
+    {
+      "issue": 7,
+      "title": "Delete a link",
+      "stage": "ready_for_human",
+      "seconds": {
+        "triage": 24.8,
+        "build": 39.2,
+        "tests": 0.7,
+        "review": 19.2,
+        "total": 115
+      },
+      "costUsd": 0.37869240000000004,
+      "triage": {
+        "actionable": true,
+        "kind": "feature",
+        "reason": "Issue specifies a concrete endpoint, status codes, and verifiable post-conditions that map directly to small, identifiable code changes."
+      },
+      "work": {
+        "status": "done",
+        "summary": "Added DELETE /links/:slug (204 on success, 404 if slug unknown) via a new LinkStore.delete method, and fixed the GET /stats/:slug handler which previously threw (→500) on a missing slug instead of returning 404. Added tests covering delete-then-404 for both GET /:slug and GET /stats/:slug, plus deleting a nonexistent slug.",
+        "filesChanged": [
+          "src/server.ts",
+          "src/store.ts",
+          "test/basic.test.ts",
+          "test/helpers.ts"
+        ],
+        "testsAdded": true,
+        "testsPass": true
+      },
+      "docsQueries": [],
+      "branch": "factory/issue-7",
+      "testsPassInVerifier": true,
+      "review": {
+        "verdict": "approve",
+        "issuesFound": []
+      },
+      "pr": "https://github.com/PromtEngineer/tinylinks/pull/17"
+    },
+    {
+      "issue": 8,
+      "title": "List links with cursor pagination",
+      "stage": "rejected",
+      "seconds": {
+        "triage": 26.1,
+        "build": 54.5,
+        "tests": 0.9,
+        "review": 63.3,
+        "total": 170
+      },
+      "costUsd": 0.48306770000000004,
+      "triage": {
+        "actionable": true,
+        "kind": "feature",
+        "reason": "Concrete testable outcome specified: new GET /links endpoint with defined response shape, limit/cursor params, and ordering behavior."
+      },
+      "work": {
+        "status": "done",
+        "summary": "Added GET /links with cursor pagination: LinkStore.list() returns items sorted by creation order (tie-broken by slug) plus a nextCursor (last item's slug, or null on the final page). The server route parses ?limit= (default 20, capped at 100, invalid values fall back to 20) and ?cursor=, passing them through to store.list(). Added 4 new tests covering ordering, multi-page cursor walking, default/cap limit behavior, and the empty-store case.",
+        "filesChanged": [
+          "src/store.ts",
+          "src/server.ts",
+          "test/helpers.ts",
+          "test/pagination.test.ts"
+        ],
+        "testsAdded": true,
+        "testsPass": true
+      },
+      "docsQueries": [],
+      "branch": "factory/issue-8",
+      "testsPassInVerifier": true,
+      "review": {
+        "verdict": "request_changes",
+        "issuesFound": [
+          "src/store.ts: all() now sorts by `createdAt - a.slug.localeCompare(b.slug)` as a tiebreaker. createdAt is millisecond resolution, and slugs are random (src/slug.ts), so when two links are created within the same millisecond (easily happens under concurrent load), GET /links returns them in alphabetical-slug order instead of creation order — violating the issue's 'in creation order' requirement. Previously all() relied on stable sort + Map insertion order to preserve true creation order for ties; this change breaks that guarantee. Reproduced directly: creating links 'zebra, apple, mango, kiwi, banana' at the same timestamp returns them as 'apple, banana, kiwi, mango, zebra'.",
+          "test/pagination.test.ts: all tests use a sequentialSlugFn() whose slugs are already monotonically increasing in creation order, so the new slug-based tiebreak in all() is never exercised in a way that could expose the ordering bug — the tests don't actually verify creation-order is preserved independent of slug lexicographic order, and in production (random slugs) the guarantee doesn't hold."
+        ]
+      }
+    },
+    {
+      "issue": 9,
+      "title": "Rate limit link creation per client",
+      "stage": "ready_for_human",
+      "seconds": {
+        "triage": 17.2,
+        "build": 56.8,
+        "tests": 0.9,
+        "review": 32.4,
+        "total": 134
+      },
+      "costUsd": 0.4179574,
+      "triage": {
+        "actionable": true,
+        "kind": "feature",
+        "reason": "Specifies exact endpoint, limit (10/min per client IP), response code/header, and explicit exclusions, matching the existing no-framework node:http server so it can be implemented and tested directly."
+      },
+      "work": {
+        "status": "done",
+        "summary": "Added a per-client-IP rate limiter for POST /links: 10 requests/minute, with the 11th returning 429 and a retry-after header (seconds). Implemented as a small injectable RateLimiter class (src/rateLimiter.ts) wired into createApp via a new optional AppOptions.rateLimiter, keyed by req.socket.remoteAddress. Redirects (GET /:slug) and stats (GET /stats/:slug) are untouched by the limiter. Added test/rateLimit.test.ts covering the 11th-request 429 + retry-after behavior, window reset after retry-after elapses (using an injected fake clock), and confirming redirects/stats remain unlimited.",
+        "filesChanged": [
+          "src/rateLimiter.ts",
+          "src/server.ts",
+          "test/rateLimit.test.ts"
+        ],
+        "testsAdded": true,
+        "testsPass": true
+      },
+      "docsQueries": [
+        "worker 19:28:39\tNode.js http IncomingMessage socket remoteAddress and how to send a Retry-After header with res.writeHead"
+      ],
+      "branch": "factory/issue-9",
+      "testsPassInVerifier": true,
+      "review": {
+        "verdict": "approve",
+        "issuesFound": []
+      },
+      "pr": "https://github.com/PromtEngineer/tinylinks/pull/18"
+    },
+    {
+      "issue": 10,
+      "title": "Make the stats better",
+      "stage": "triaged_out",
+      "seconds": {
+        "triage": 23.7,
+        "total": 31
+      },
+      "costUsd": 0.09770510000000002,
+      "triage": {
+        "actionable": false,
+        "kind": "feature",
+        "reason": "The request bundles an undefined data model extension, endpoint changes, and a possible UI dashboard without any concrete, testable outcome or scope."
+      }
+    }
+  ]
+}

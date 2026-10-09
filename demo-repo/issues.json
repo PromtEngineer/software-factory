@@ -1,0 +1,22 @@
+[
+ {"id": 1, "labels": ["bug"], "title": "Random slugs can collide and overwrite existing links",
+  "body": "`POST /links` picks a random slug but never checks whether it is already taken. When two links get the same slug, the second silently replaces the first, so the old short URL now points somewhere else. Creating a link must never overwrite an existing one: keep generating until the slug is free."},
+ {"id": 2, "labels": ["bug", "security"], "title": "URLs without a scheme are accepted and produce broken redirects",
+  "body": "`POST /links` with `{\"url\": \"example.com\"}` returns 201, and the redirect then sends `Location: example.com`, which browsers treat as a relative path. Only `http` and `https` URLs should be accepted. Either reject scheme-less input with 400 or normalize it to `https://`. Anything with another scheme (`javascript:`, `ftp:`, `data:`) must be rejected with 400."},
+ {"id": 3, "labels": ["bug"], "title": "GET /stats/:slug returns 500 for an unknown slug",
+  "body": "Requesting stats for a slug that does not exist crashes the handler and returns 500. It should return 404 with `{\"error\": \"not found\"}`, the same as the redirect route."},
+ {"id": 4, "labels": ["bug"], "title": "HEAD requests are counted as clicks",
+  "body": "Link previewers and uptime checkers send `HEAD` requests, and each one increments the click counter. `HEAD /:slug` should still answer 302 with the `Location` header, but it must not count as a click. Only `GET` counts."},
+ {"id": 5, "labels": ["feature"], "title": "Support custom slugs",
+  "body": "Let callers choose the slug: `POST /links` with `{\"url\": \"...\", \"slug\": \"my-launch\"}`. A custom slug must match `^[a-z0-9-]{3,32}$`, otherwise return 400. If the slug is already taken, return 409 and leave the existing link untouched. Without `slug`, keep generating a random one."},
+ {"id": 6, "labels": ["feature"], "title": "Links that expire",
+  "body": "Accept an optional `expiresInSeconds` (positive integer) on `POST /links`. After it passes, `GET /:slug` returns 410 with `{\"error\": \"expired\"}` instead of redirecting, and the expired visit is not counted. Links without the field never expire."},
+ {"id": 7, "labels": ["feature"], "title": "Delete a link",
+  "body": "Add `DELETE /links/:slug`. It returns 204 when the link existed and 404 otherwise. After deletion, `GET /:slug` and `GET /stats/:slug` both return 404."},
+ {"id": 8, "labels": ["feature"], "title": "List links with cursor pagination",
+  "body": "Add `GET /links` that returns `{\"items\": [...], \"nextCursor\": string | null}` in creation order. Support `?limit=` (default 20, max 100) and `?cursor=` taken from the previous page's `nextCursor`. The last page has `nextCursor: null`."},
+ {"id": 9, "labels": ["feature"], "title": "Rate limit link creation per client",
+  "body": "One client can create unlimited links. Limit `POST /links` to 10 requests per minute per client IP; the 11th request inside the window returns 429 with a `retry-after` header in seconds. Redirects and stats are not rate limited."},
+ {"id": 10, "labels": ["enhancement"], "title": "Make the stats better",
+  "body": "The stats are kind of useless right now. Can we make them better? Maybe more data, maybe a dashboard, not sure. Would be nice."}
+]

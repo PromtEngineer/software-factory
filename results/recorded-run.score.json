@@ -1,0 +1,109 @@
+{
+  "run": "upstash-isolated-2026-10-05T20-03-10-401Z",
+  "backend": "upstash-box",
+  "wallSeconds": 274,
+  "prsOpened": 9,
+  "hiddenPassAmongPRs": 9,
+  "hiddenPassAll": 9,
+  "rejectedButCorrect": 0,
+  "approvedButWrong": 0,
+  "vagueIssueTriagedOut": true,
+  "rows": [
+    {
+      "issue": 1,
+      "stage": "ready_for_human",
+      "triage": true,
+      "agentSaidTestsPass": true,
+      "verifierTests": true,
+      "review": "approve",
+      "hiddenPass": true,
+      "total_s": 71
+    },
+    {
+      "issue": 2,
+      "stage": "ready_for_human",
+      "triage": true,
+      "agentSaidTestsPass": true,
+      "verifierTests": true,
+      "review": "approve",
+      "hiddenPass": true,
+      "total_s": 124
+    },
+    {
+      "issue": 3,
+      "stage": "ready_for_human",
+      "triage": true,
+      "agentSaidTestsPass": true,
+      "verifierTests": true,
+      "review": "approve",
+      "hiddenPass": true,
+      "total_s": 79
+    },
+    {
+      "issue": 4,
+      "stage": "ready_for_human",
+      "triage": true,
+      "agentSaidTestsPass": true,
+      "verifierTests": true,
+      "review": "approve",
+      "hiddenPass": true,
+      "total_s": 73
+    },
+    {
+      "issue": 5,
+      "stage": "ready_for_human",
+      "triage": true,
+      "agentSaidTestsPass": true,
+      "verifierTests": true,
+      "review": "approve",
+      "hiddenPass": true,
+      "total_s": 101
+    },
+    {
+      "issue": 6,
+      "stage": "ready_for_human",
+      "triage": true,
+      "agentSaidTestsPass": true,
+      "verifierTests": true,
+      "review": "approve",
+      "hiddenPass": true,
+      "total_s": 139
+    },
+    {
+      "issue": 7,
+      "stage": "ready_for_human",
+      "triage": true,
+      "agentSaidTestsPass": true,
+      "verifierTests": true,
+      "review": "approve",
+      "hiddenPass": true,
+      "total_s": 110
+    },
+    {
+      "issue": 8,
+      "stage": "ready_for_human",
+      "triage": true,
+      "agentSaidTestsPass": true,
+      "verifierTests": true,
+      "review": "approve",
+      "hiddenPass": true,
+      "total_s": 129
+    },
+    {
+      "issue": 9,
+      "stage": "ready_for_human",
+      "triage": true,
+      "agentSaidTestsPass": true,
+      "verifierTests": true,
+      "review": "approve",
+      "hiddenPass": true,
+      "total_s": 169
+    },
+    {
+      "issue": 10,
+      "stage": "triaged_out",
+      "triage": false,
+      "total_s": 29
+    }
+  ]
+}

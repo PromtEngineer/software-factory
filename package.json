@@ -1,0 +1,32 @@
+{
+  "name": "software-factory",
+  "version": "1.0.0",
+  "description": "A software factory on Upstash Box: Claude Code agents turn GitHub issues into reviewed pull requests, one cloud sandbox per agent.",
+  "scripts": {
+    "factory": "tsx src/run.ts",
+    "integrate": "tsx src/integrate.ts",
+    "smoke": "tsx src/smoke.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "software-factory",
+    "claude-code",
+    "upstash-box",
+    "ai-agents",
+    "context7"
+  ],
+  "author": "Prompt Engineering",
+  "license": "MIT",
+  "dependencies": {
+    "@upstash/box": "^0.7.7",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "undici": "^7.30.0",
+    "zod": "^4.6.5"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^22.20.4"
+  },
+  "private": true
+}
